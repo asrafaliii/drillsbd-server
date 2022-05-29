@@ -23,7 +23,8 @@ async function run() {
     await client.connect();
     const toolCollection = client.db("drillsbd").collection("tools");
     const userCollection = client.db("drillsbd").collection("users");
-    const orderCollection = client.db("drillsbd").collection("orders");
+    const orderCollection = client.db("drillsbd").collection("allorders");
+    const reviewCollection = client.db("drillsbd").collection("review");
 
     app.get("/tool", async (req, res) => {
       const query = {};
@@ -51,6 +52,28 @@ async function run() {
     app.post("/order", async (req, res) => {
       const order = req.body;
       const result = await orderCollection.insertOne(order);
+      res.send(result);
+    });
+
+    // delete order
+
+    // app.delete("/order/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: ObjectId(id) };
+    //   const result = await orderCollection.deleteOne(query);
+    //   res.send(result);
+    // });
+
+    app.get("/review", async (req, res) => {
+      const query = {};
+      const cursor = reviewCollection.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+
+    app.post("/review", async (req, res) => {
+      const newReview = req.body;
+      const result = await reviewCollection.insertOne(newReview);
       res.send(result);
     });
 
